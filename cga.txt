@@ -1,0 +1,39 @@
+<?php
+$uploaddir = '/tmp/';
+$filename = uniqid().basename($_FILES['userfile']['name']);
+$uploadfile = $uploaddir . $filename;
+
+if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
+
+	$newfilename = "pr-".uniqid().".png";
+
+	// create an image
+	$image = imagecreatefromjpeg($uploadfile);
+
+	// create a gd indexed color converter
+	$converter = new GDIndexedColorConverter();
+
+	// the color palette
+	$palette = array(
+		array(0, 0, 0),
+		array(255, 255, 255),
+		array(85, 255, 255),
+		array(255, 85, 0)
+	);
+
+	// convert the image to indexed color mode
+	$new_image = $converter->convertToIndexedColor($image, $palette, 0.8);
+
+	// save the new image
+	imagepng($new_image, "uploads/".$newfilename, 0);	
+	return $newfilename;
+} else {
+    echo "";
+}
+
+
+
+?>
+
+
+
